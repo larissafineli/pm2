@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Natacao extends Atividade implements Certificavel, ControladorPresenca {
+
     private double profundidadePiscina;
     private List<String> presencas = new ArrayList<>();
 
-    public Natacao(String nome, String horario, int duracaoMinutos,
-                   int maxParticipantes, double profundidadePiscina) {
-        super(nome, horario, duracaoMinutos, maxParticipantes, Modalidade.COLETIVA);
+    public Natacao(String nome, int duracaoAula, int quantidadeMaximaParticipantes,
+                   double valorMensal, StatusAtividade status, double profundidadePiscina) {
+        super(nome, duracaoAula, quantidadeMaximaParticipantes, valorMensal, status);
         this.profundidadePiscina = profundidadePiscina;
     }
 
-    public double getProfundidadePiscina() { return profundidadePiscina; }
+    public double getProfundidadePiscina() {
+        return profundidadePiscina;
+    }
 
     @Override
     public void emitirCertificado(String nomeParticipante) {
@@ -23,16 +26,36 @@ public class Natacao extends Atividade implements Certificavel, ControladorPrese
 
     @Override
     public void registrarPresenca(String nomeParticipante) {
-        if (presencas.size() >= getMaxParticipantes()) {
-            System.out.println("Turma lotada. Presença não registrada.");
+        if (getStatus() != StatusAtividade.ATIVA) {
+            System.out.println("Atividade " + getStatus() + ". Presença não registrada.");
             return;
         }
         presencas.add(nomeParticipante);
         System.out.println("Presença de " + nomeParticipante + " registrada em " + getNome() + ".");
+        if (presencas.size() >= getQuantidadeMaximaParticipantes()) {
+            setStatus(StatusAtividade.LOTADA);
+        }
     }
 
     @Override
-    protected String detalhes() {
-        return "Profundidade: " + profundidadePiscina + " m | Certificado: sim | Presenças: " + presencas.size();
+    public void exibirDetalhes() {
+        System.out.println("Natação - " + getNome()
+                + " | Duração: " + getDuracaoAula() + " min"
+                + " | Máx. participantes: " + getQuantidadeMaximaParticipantes()
+                + " | R$ " + String.format("%.2f", getValorMensal())
+                + " | " + getStatus()
+                + " | Profundidade: " + profundidadePiscina + " m"
+                + " | Certificado: sim"
+                + " | Presenças: " + presencas.size());
+    }
+
+    @Override
+    public boolean atividadeColetiva() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return getNome();
     }
 }

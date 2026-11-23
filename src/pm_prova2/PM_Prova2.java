@@ -32,16 +32,15 @@ public class PM_Prova2 {
     }
 
     private static void carregarDadosIniciais() {
-        Atividade musc = new Musculacao("Musculação Manhã", "07:00", 60, 20, 15);
-        Atividade nat = new Natacao("Natação Iniciante", "09:00", 45, 10, 1.5);
-        Atividade spin = new Spinning("Spinning Noite", "19:00", 50, 12, 12);
-        spin.setStatus(Status.INATIVO);
-        academia.adicionarAtividade(musc);
-        academia.adicionarAtividade(nat);
-        academia.adicionarAtividade(spin);
+        academia.adicionarAtividade(new Musculacao("Musculação Manhã", 60, 20, 80.0,
+                StatusAtividade.ATIVA, 15));
+        academia.adicionarAtividade(new Natacao("Natação Iniciante", 45, 10, 120.0,
+                StatusAtividade.ATIVA, 1.5));
+        academia.adicionarAtividade(new Spinning("Spinning Noite", 50, 12, 100.0,
+                StatusAtividade.INATIVA, 12));
 
-        academia.adicionarPlano(new PlanoBasico("Básico", 89.90));
-        academia.adicionarPlano(new PlanoPremium("Premium", 199.90));
+        academia.adicionarPlano(new PlanoBasico("Básico", 89.90, 2, StatusPlano.ATIVO));
+        academia.adicionarPlano(new PlanoPremium("Premium", 199.90, 5, StatusPlano.ATIVO));
     }
 
     private static void exibirMenu() {
@@ -64,7 +63,7 @@ public class PM_Prova2 {
             return;
         }
         for (int i = 0; i < planos.size(); i++) {
-            System.out.println((i + 1) + " - " + planos.get(i).getNome());
+            System.out.println((i + 1) + " - " + planos.get(i));
         }
         int ip = lerInt("Plano: ") - 1;
         for (int i = 0; i < atividades.size(); i++) {
@@ -75,10 +74,11 @@ public class PM_Prova2 {
             System.out.println("Seleção inválida.");
             return;
         }
-        if (academia.associarAtividadeAoPlano(planos.get(ip), atividades.get(ia))) {
+        String erro = academia.associarAtividadeAoPlano(planos.get(ip), atividades.get(ia));
+        if (erro == null) {
             System.out.println("Atividade associada com sucesso.");
         } else {
-            System.out.println("Não foi possível associar (plano não permite ou já associada).");
+            System.out.println("Não foi possível associar: " + erro);
         }
     }
 
@@ -86,14 +86,25 @@ public class PM_Prova2 {
         if (academia.getAtividades().isEmpty()) {
             System.out.println("Nenhuma atividade cadastrada.");
         }
-        for (Atividade a : academia.getAtividades()) a.exibir();
+        for (Atividade a : academia.getAtividades()) {
+            a.exibirDetalhes();
+        }
     }
 
     private static void listarPlanos(List<Plano> planos) {
         if (planos.isEmpty()) {
             System.out.println("Nenhum plano encontrado.");
         }
-        for (Plano p : planos) p.exibir();
+        for (Plano p : planos) {
+            p.exibirDetalhes();
+            List<Atividade> associadas = academia.getAtividadesDoPlano(p);
+            if (associadas.isEmpty()) {
+                System.out.println("    (sem atividades associadas)");
+            }
+            for (Atividade a : associadas) {
+                System.out.println("    - " + a);
+            }
+        }
     }
 
     private static void emitirCertificado() {
@@ -121,10 +132,9 @@ public class PM_Prova2 {
             return;
         }
         for (int i = 0; i < lista.size(); i++) {
-            Object o = lista.get(i);
-            String tipo = (o instanceof Plano) ? "Plano " : "Atividade ";
-            String nome = (o instanceof Plano) ? ((Plano) o).getNome() : o.toString();
-            System.out.println((i + 1) + " - " + tipo + nome);
+            ControladorPresenca c = lista.get(i);
+            String tipo = (c instanceof Plano) ? "Plano " : "Atividade ";
+            System.out.println((i + 1) + " - " + tipo + c);
         }
         int i = lerInt("Escolha: ") - 1;
         if (i < 0 || i >= lista.size()) {

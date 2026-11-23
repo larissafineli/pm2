@@ -1,51 +1,67 @@
 package pm_prova2;
 
 public abstract class Atividade {
+
     private String nome;
-    private String horario;
-    private int duracaoMinutos;
-    private int maxParticipantes;
-    private Status status;
-    private Modalidade modalidade;
+    private int duracaoAula;
+    private int quantidadeMaximaParticipantes;
+    private double valorMensal;
+    private StatusAtividade status;
 
-    protected Atividade(String nome, String horario, int duracaoMinutos,
-                        int maxParticipantes, Modalidade modalidade) {
+    public Atividade(String nome,
+                     int duracaoAula,
+                     int quantidadeMaximaParticipantes,
+                     double valorMensal,
+                     StatusAtividade status) {
+
         this.nome = nome;
-        this.horario = horario;
-        this.duracaoMinutos = duracaoMinutos;
-        this.maxParticipantes = maxParticipantes;
-        this.modalidade = modalidade;
-        this.status = Status.ATIVO;
+        this.duracaoAula = duracaoAula;
+        this.quantidadeMaximaParticipantes = quantidadeMaximaParticipantes;
+        this.valorMensal = valorMensal;
+        this.status = status;
     }
 
-    public String getNome() { return nome; }
-    public String getHorario() { return horario; }
-    public int getDuracaoMinutos() { return duracaoMinutos; }
-    public int getMaxParticipantes() { return maxParticipantes; }
-    public Status getStatus() { return status; }
-    public Modalidade getModalidade() { return modalidade; }
-
-    public void setStatus(Status status) { this.status = status; }
-
-    public boolean isAtiva() {
-        return status == Status.ATIVO;
+    public String getNome() {
+        return nome;
     }
 
-    /** Detalhes específicos de cada tipo de atividade. */
-    protected abstract String detalhes();
-
-    public void exibir() {
-        System.out.println(getClass().getSimpleName() + " - " + nome
-                + " | Horário: " + horario
-                + " | Duração: " + duracaoMinutos + " min"
-                + " | Máx. participantes: " + maxParticipantes
-                + " | " + modalidade
-                + " | " + status
-                + " | " + detalhes());
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    @Override
-    public String toString() {
-        return nome + " (" + horario + ")";
+    public int getDuracaoAula() {
+        return duracaoAula;
     }
+
+    public void setDuracaoAula(int duracaoAula) {
+        this.duracaoAula = duracaoAula;
+    }
+
+    public int getQuantidadeMaximaParticipantes() {
+        return quantidadeMaximaParticipantes;
+    }
+
+    public void setQuantidadeMaximaParticipantes(int quantidadeMaximaParticipantes) {
+        this.quantidadeMaximaParticipantes = quantidadeMaximaParticipantes;
+    }
+
+    public double getValorMensal() {
+        return valorMensal;
+    }
+
+    public void setValorMensal(double valorMensal) {
+        this.valorMensal = valorMensal;
+    }
+
+    public StatusAtividade getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusAtividade status) {
+        this.status = status;
+    }
+
+    public abstract void exibirDetalhes();
+
+    public abstract boolean atividadeColetiva();
 }

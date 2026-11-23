@@ -2,17 +2,27 @@ package pm_prova2;
 
 public class PlanoPremium extends Plano {
 
-    public PlanoPremium(String nome, double valorMensal) {
-        super(nome, valorMensal);
+    public PlanoPremium(String nome, double valorMensal,
+                        int quantidadeMaximaAtividades, StatusPlano status) {
+        super(nome, valorMensal, quantidadeMaximaAtividades, status);
     }
 
     @Override
-    public boolean permiteAtividade(Atividade atividade) {
+    public void exibirDetalhes() {
+        System.out.println("Plano Premium - " + getNome()
+                + " | R$ " + String.format("%.2f", getValorMensal())
+                + " | Máx. atividades: " + getQuantidadeMaximaAtividades()
+                + " | " + getStatus()
+                + " | Qualquer atividade | Acesso ilimitado");
+    }
+
+    @Override
+    public boolean permiteAtividadeColetiva() {
         return true;
     }
 
     @Override
-    protected String detalhes() {
-        return "Qualquer atividade | Acesso ilimitado";
+    public String toString() {
+        return getNome();
     }
 }

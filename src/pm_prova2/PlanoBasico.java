@@ -5,23 +5,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlanoBasico extends Plano implements ControladorPresenca {
+
     // cliente -> data do último acesso (limite de 1 acesso ao dia)
     private Map<String, LocalDate> acessos = new HashMap<>();
 
-    public PlanoBasico(String nome, double valorMensal) {
-        super(nome, valorMensal);
-    }
-
-    @Override
-    public boolean permiteAtividade(Atividade atividade) {
-        return atividade.getModalidade() == Modalidade.INDIVIDUAL;
+    public PlanoBasico(String nome, double valorMensal,
+                       int quantidadeMaximaAtividades, StatusPlano status) {
+        super(nome, valorMensal, quantidadeMaximaAtividades, status);
     }
 
     @Override
     public void registrarPresenca(String nomeCliente) {
         LocalDate hoje = LocalDate.now();
         if (hoje.equals(acessos.get(nomeCliente))) {
-            System.out.println("Acesso negado: " + nomeCliente + " já utilizou o acesso diário do plano " + getNome() + ".");
+            System.out.println("Acesso negado: " + nomeCliente
+                    + " já utilizou o acesso diário do plano " + getNome() + ".");
             return;
         }
         acessos.put(nomeCliente, hoje);
@@ -29,7 +27,21 @@ public class PlanoBasico extends Plano implements ControladorPresenca {
     }
 
     @Override
-    protected String detalhes() {
-        return "Apenas atividades individuais | 1 acesso/dia (com controle de frequência)";
+    public void exibirDetalhes() {
+        System.out.println("Plano Básico - " + getNome()
+                + " | R$ " + String.format("%.2f", getValorMensal())
+                + " | Máx. atividades: " + getQuantidadeMaximaAtividades()
+                + " | " + getStatus()
+                + " | Apenas atividades individuais | 1 acesso/dia (com controle de frequência)");
+    }
+
+    @Override
+    public boolean permiteAtividadeColetiva() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return getNome();
     }
 }
